@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "./FunctionApp1"
+    },
+    {
+      "path": "./client1"
+    },
+    {
+      "path": "./backend"
+    }
+  ],
+  "settings": {
+    "debug.internalConsoleOptions": "neverOpen"
+  }
+}

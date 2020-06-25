@@ -1,0 +1,9 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}",
+    "dist{,/**}"
+  ],
+  "appService.deploySubpath": ".",
+  "appService.defaultWebAppToDeploy": "/subscriptions/2a723c6b-5bad-4cd6-80b0-3dd992564e49/resourceGroups/manavuexpress/providers/Microsoft.Web/sites/manavuexpress-web"
+}
