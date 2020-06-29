@@ -2,27 +2,28 @@ import axios from 'axios'
 
 // initial state
 const state = () => ({
-  items2: [{ id: 1, context: '初期のデータ' }],
+  items: [{ id: 1, context: '初期のデータ' }],
 })
 
 // getters
 const getters = {
-  // this.$store.getters.todoCount
-  todoCount(state) {
-    return state.items.count()
+  // this.$store.getters["todo/todoCount"]
+  todoCount: (state) => state.items.length,
+  todoCount2(state) {
+    return state.items.length
   },
 }
 
 // mutations は非同期が許されない。値の変更をするから
 const mutations = {
   addToDoItem(state, item) {
-    state.items2.push(item)
+    state.items.push(item)
   },
   deleteToDoItem(state, id) {
-    state.items2 = state.items2.filter((n) => n.id !== id)
+    state.items = state.items.filter((n) => n.id !== id)
   },
   setToDoItems(state, items) {
-    state.items2 = items
+    state.items = items
   },
 }
 
@@ -64,6 +65,13 @@ const actions = {
   },
   // this.$store.dispatch('todo/getTodoList', {email: email, token: token})
   async getTodoList({ commit }, { email, token }) {
+    /*
+  var config = {
+    headers: { 'X-Api-Key': 'test' },
+    withCredentials: true, // 同一ドメインだと自動で cookie を送信するらしい
+    data: {}, // これがないとダメらしい
+  }*/
+
     // await を使って例外処理を行うとうまくデバッグできない。。。
     // axios.defaultに値を設定すると、グローバル設定となり全てのリクエストに反映される。
     const apiUrl = process.env.VUE_APP_API_URL + 'todo'
