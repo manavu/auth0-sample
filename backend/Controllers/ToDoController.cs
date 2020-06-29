@@ -4,6 +4,7 @@ namespace backend.Controllers
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Azure.Cosmos;
     using Microsoft.AspNetCore.Authorization;
@@ -17,9 +18,12 @@ namespace backend.Controllers
     {
         private readonly ILogger<ToDoController> _logger;
 
-        public ToDoController(ILogger<ToDoController> logger)
+        private readonly IConfiguration _configuration;
+
+        public ToDoController(ILogger<ToDoController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -28,8 +32,8 @@ namespace backend.Controllers
             // ユーザー情報が入っていないjwtなので欲しい場合は、auth0に問い合わせる必要があるかも。
             // それかユーザー情報入りのjwtにするか、別個引数でユーザー情報を送ってもらう必要があるかも
 
-            var endpointUri = "https://manavucosmos.documents.azure.com:443/";
-            var primaryKey = "vpJ2M7ImKuZSnsfdnsIiKpvIHy0b0B3U9xDSyxsik0j3GlE6wnzaXCxHeJRyNHdIkqB3fp8rMKzegWoz1IsKnA==";
+            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
+            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
             using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
@@ -62,8 +66,8 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDoItem>> Post([FromForm] string context, [FromForm] string email)
         {
-            var endpointUri = "https://manavucosmos.documents.azure.com:443/";
-            var primaryKey = "vpJ2M7ImKuZSnsfdnsIiKpvIHy0b0B3U9xDSyxsik0j3GlE6wnzaXCxHeJRyNHdIkqB3fp8rMKzegWoz1IsKnA==";
+            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
+            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
             using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
@@ -93,8 +97,8 @@ namespace backend.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id, [FromForm] string email)
         {
-            var endpointUri = "https://manavucosmos.documents.azure.com:443/";
-            var primaryKey = "vpJ2M7ImKuZSnsfdnsIiKpvIHy0b0B3U9xDSyxsik0j3GlE6wnzaXCxHeJRyNHdIkqB3fp8rMKzegWoz1IsKnA==";
+            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
+            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
             using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
