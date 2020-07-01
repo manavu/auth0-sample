@@ -58,11 +58,12 @@
 </template>
 
 <script>
-import Moment from 'moment'
+import MyMixin from './../mixins/index'
 import { mapState } from 'vuex'
 
 export default {
   name: 'ToDo',
+  mixins: [MyMixin],
   data() {
     // data はページが切り替わると消えるので、vuex を使って永続化する必要がある
     return {
@@ -77,12 +78,6 @@ export default {
     }),
     todoCount() {
       return this.$store.getters['todo/todoCount']
-    },
-  },
-  filters: {
-    // テンプレートで使用可能な変換処理などを定義できる
-    moment(date) {
-      return Moment(date).format('YYYY/MM/DD HH:mm')
     },
   },
   created: function() {
