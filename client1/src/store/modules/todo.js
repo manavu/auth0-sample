@@ -43,7 +43,6 @@ const actions = {
     })
 
     // id を返してもらう必要がある
-    console.log(res)
     commit('addToDoItem', res.data)
   },
   // this.$store.dispatch('todo/deleleteTodoItem', {email: email, id: id, token: token})

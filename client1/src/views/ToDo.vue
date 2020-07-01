@@ -3,7 +3,13 @@
     <form class="form-inline" @submit="onAddTaskHandler" method="post">
       <div class="form-group">
         <label class="col-md-4" for="context">内容</label>
-        <input type="text" class="form-control col-md-8" id="context" v-model="context" value />
+        <input
+          type="text"
+          class="form-control col-md-8"
+          id="context"
+          v-model="context"
+          value
+        />
       </div>
       <div class="form-group">
         <div class="col-md-12">
@@ -13,7 +19,9 @@
     </form>
     <div class="row">
       <div class="col-md-12">
-        <button class="btn btn-primary" v-on:click="onGetTaskHandler">一覧取得</button>
+        <button class="btn btn-primary" v-on:click="onGetTaskHandler">
+          一覧取得
+        </button>
       </div>
     </div>
     <div class="row">
@@ -34,7 +42,12 @@
               <td>{{ item.context }}</td>
               <td>{{ item.createAt | moment }}</td>
               <td>
-                <button class="btn btn-danger" v-on:click="onDelTaskHandler($event, item.id)">削除</button>
+                <button
+                  class="btn btn-danger"
+                  v-on:click="onDelTaskHandler($event, item.id)"
+                >
+                  削除
+                </button>
               </td>
             </tr>
           </tbody>
@@ -45,32 +58,32 @@
 </template>
 
 <script>
-import Moment from "moment";
-import { mapState } from "vuex";
+import Moment from 'moment'
+import { mapState } from 'vuex'
 
 export default {
-  name: "ToDo",
+  name: 'ToDo',
   data() {
     // data はページが切り替わると消えるので、vuex を使って永続化する必要がある
     return {
-      context: ""
-    };
+      context: '',
+    }
   },
   computed: {
     // mapState はオブジェクトを返す、そのため他のプロパティとマージするためにオブジェクトスプレット演算子 ... を使う
     // mapState メソッド経由でメソッドを作ることでプロキシ的な役割になるのかも
     ...mapState({
-      items: state => state.todo.items
+      items: (state) => state.todo.items,
     }),
     todoCount() {
-      return this.$store.getters["todo/todoCount"];
-    }
+      return this.$store.getters['todo/todoCount']
+    },
   },
   filters: {
     // テンプレートで使用可能な変換処理などを定義できる
     moment(date) {
-      return Moment(date).format("YYYY/MM/DD HH:mm");
-    }
+      return Moment(date).format('YYYY/MM/DD HH:mm')
+    },
   },
   created: function() {
     // このタイミングでは$auth がないっぽい
@@ -88,46 +101,64 @@ export default {
       token: token,
     })*/
   },
+  async mounted() {
+    // このタイミングでは$auth がないっぽい。なので下記の処理は失敗する
+    /*
+    // ユーザー情報が入っていない、jwt が返ってくる
+    const token = await this.$auth.getTokenSilently()
+    // ユーザー情報を取得
+    const claims = await this.$auth.getIdTokenClaims()
+
+    // dispatch も非同期なメソッド
+    await this.$store.dispatch('todo/getTodoList', {
+      context: this.context,
+      email: claims.email,
+      token: token,
+    })*/
+  },
   methods: {
+    // アロー演算子で書くと this が undefined
+    // onAddTaskHandler: async (e) => {
     async onAddTaskHandler(e) {
-      e.preventDefault();
+      e.preventDefault()
 
       // ユーザー情報が入っていない、jwt が返ってくる
-      const token = await this.$auth.getTokenSilently();
+      const token = await this.$auth.getTokenSilently()
       // ユーザー情報を取得
-      const claims = await this.$auth.getIdTokenClaims();
+      const claims = await this.$auth.getIdTokenClaims()
 
-      this.$store.dispatch("todo/addTodoItem", {
+      // dispatch も非同期なメソッド
+      await this.$store.dispatch('todo/addTodoItem', {
         context: this.context,
         email: claims.email,
-        token: token
-      });
+        token: token,
+      })
 
-      this.context = "";
+      this.context = ''
     },
     async onDelTaskHandler(e, id) {
-      e.preventDefault();
+      e.preventDefault()
 
-      const token = await this.$auth.getTokenSilently();
-      const claims = await this.$auth.getIdTokenClaims();
+      const token = await this.$auth.getTokenSilently()
+      const claims = await this.$auth.getIdTokenClaims()
 
-      this.$store.dispatch("todo/deleleteTodoItem", {
+      await this.$store.dispatch('todo/deleleteTodoItem', {
         id: id,
         email: claims.email,
-        token: token
-      });
+        token: token,
+      })
     },
     async onGetTaskHandler(e) {
-      e.preventDefault();
+      e.preventDefault()
 
-      const token = await this.$auth.getTokenSilently();
-      const claims = await this.$auth.getIdTokenClaims();
+      const token = await this.$auth.getTokenSilently()
+      const claims = await this.$auth.getIdTokenClaims()
 
-      this.$store.dispatch("todo/getTodoList", {
+      await this.$store.dispatch('todo/getTodoList', {
         email: claims.email,
-        token: token
-      });
-    }
-  }
-};
+        token: token,
+      })
+    },
+  },
+}
 </script>
