@@ -1,4 +1,5 @@
 {
   "domain": "manavu.us.auth0.com",
-  "clientId": "5rnLs7Ys5PLW2BNRUjH2LEfJ7gYyydFZ"
+  "clientId": "5rnLs7Ys5PLW2BNRUjH2LEfJ7gYyydFZ",
+  "audience": "https://localhost:8080/api"
 }

@@ -30,17 +30,34 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>No.</th>
               <th>内容</th>
               <th>作成日時</th>
+              <th>状態</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" v-bind:key="item.id">
-              <td>{{ item.id }}</td>
-              <td>{{ item.context }}</td>
+            <tr v-for="(item, index) in items" v-bind:key="item.id">
+              <td>{{ index + 1 }}</td>
+              <td>
+                <input
+                  type="input"
+                  class="form-control"
+                  v-model="item.context"
+                />
+              </td>
               <td>{{ item.createAt | moment }}</td>
+              <td>
+                <select v-model="item.status">
+                  <option
+                    v-for="option in statusOptions"
+                    v-bind:key="option.value"
+                    v-bind:value="option.value"
+                    >{{ option.text }}</option
+                  >
+                </select>
+              </td>
               <td>
                 <button
                   class="btn btn-danger"
@@ -54,12 +71,19 @@
         </table>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-primary" v-on:click="onUpdateTaskHandler">
+          保存
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import MyMixin from './../mixins/index'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'ToDo',
@@ -68,6 +92,11 @@ export default {
     // data はページが切り替わると消えるので、vuex を使って永続化する必要がある
     return {
       context: '',
+      statusOptions: [
+        { text: '新規', value: 'New' },
+        { text: '実行中', value: 'Active' },
+        { text: '完了', value: 'Done' },
+      ],
     }
   },
   computed: {
@@ -76,10 +105,18 @@ export default {
     ...mapState({
       items: (state) => state.todo.items,
     }),
+    /*
     todoCount() {
       return this.$store.getters['todo/todoCount']
-    },
+    },*/
+    // 上の書き方と同じ結果になる
+    ...mapGetters('todo', ['todoCount']),
   },
+  /*watch: {
+    readOnlyItems(values) {
+      this.items = values
+    },
+  },*/
   created: function() {
     // このタイミングでは$auth がないっぽい
     /*
@@ -153,6 +190,22 @@ export default {
         email: claims.email,
         token: token,
       })
+    },
+    async onUpdateTaskHandler(e) {
+      e.preventDefault()
+
+      const token = await this.$auth.getTokenSilently()
+      const claims = await this.$auth.getIdTokenClaims()
+
+      await Promise.all(
+        this.items.map(async (item) => {
+          await this.$store.dispatch('todo/updateTodoItem', {
+            email: claims.email,
+            token: token,
+            todo: item,
+          })
+        })
+      )
     },
   },
 }

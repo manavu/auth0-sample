@@ -2,6 +2,9 @@
   // IntelliSense を使用して利用可能な属性を学べます。
   // 既存の属性の説明をホバーして表示します。
   // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  // smartStep はソースマップが存在しない場合、そこを飛ばしてくれるらしい
+  // breakOnLoad 新しいスクリプトが読み込まれる度にブレークするらしい
+  // sourceMaps はデフォルトで true らしい
   "version": "0.2.0",
   "configurations": [
     {
@@ -12,6 +15,7 @@
       "webRoot": "${workspaceFolder}/src",
       "breakOnLoad": false,
       "smartStep": true,
+      "sourceMaps": true,
       "sourceMapPathOverrides": {
         "webpack:///src/*": "${webRoot}/*",
         "webpack:///./src/*": "${webRoot}/*"

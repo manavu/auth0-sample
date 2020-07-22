@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/a9d750ed-a965-4871-b0af-4bf70a8260da/resourceGroups/auth0-sample/providers/Microsoft.Web/sites/auth0-sample-backend",
+    "appService.deploySubpath": ".vscode"
+}

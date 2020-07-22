@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // initial state
 const state = () => ({
-  items: [{ id: 1, context: '初期のデータ' }],
+  items: [],
 })
 
 // getters
@@ -11,6 +11,9 @@ const getters = {
   todoCount: (state) => state.items.length,
   todoCount2(state) {
     return state.items.length
+  },
+  allItems(state) {
+    return state.items
   },
 }
 
@@ -91,6 +94,24 @@ const actions = {
       // データに反映させる
       commit('setToDoItems', res.data)
     }
+  },
+  // this.$store.dispatch('todo/updateTodoList', {email: email, token: token, todo: todo})
+  async updateTodoItem({ commit }, { email, token, todo }) {
+    const params = new URLSearchParams()
+    params.append('email', email)
+    params.append('status', todo.status)
+    params.append('context', todo.context)
+
+    // put でformパラメータを渡す場合は、下記のようにする
+    const apiUrl = process.env.VUE_APP_API_URL + `todo/${todo.id}`
+    var res = await axios.put(apiUrl, params, {
+      headers: {
+        Authorization: `Bearer ${token}`, // send the access token through the 'Authorization' header
+      },
+    })
+
+    console.log(commit)
+    console.log(res)
   },
 }
 

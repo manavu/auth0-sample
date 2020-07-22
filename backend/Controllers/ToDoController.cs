@@ -81,17 +81,49 @@ namespace backend.Controllers
             var containerResponse = await database.CreateContainerIfNotExistsAsync(containerId, "/email", 400);
             var container = containerResponse.Container;
 
+            // Status に enum を使ってうまく表現したほうが良いかも
             var data = new ToDoItem
             {
                 Id = Guid.NewGuid(),
                 Context = context,
                 EMail = email,
+                Status = "New",
                 CreateAt = DateTime.Now
             };
 
             var item = await container.CreateItemAsync<ToDoItem>(data, new PartitionKey(data.EMail));
 
             return this.CreatedAtAction("Get", new { id = data.Id, email = email }, data);
+        }
+
+        [HttpPut("{id:Guid}")]
+        public async Task<IActionResult> Put(Guid id, [FromForm] string context, [FromForm] string email, [FromForm] string status)
+        {
+            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
+            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
+            using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
+            { ApplicationName = "CosmosDBDotnetQuickstart" });
+
+            // データベースはそのまま
+            var databaseId = "ToDoList";
+            var databaseResponse = await cosmosClient.CreateDatabaseIfNotExistsAsync(databaseId);
+            var database = databaseResponse.Database;
+
+            // コンテナはテーブルにあたる（パーティションキー毎に適切にデータが配置されるのである程度分散される値が良いかも）
+            var containerId = "NewItems";
+            var containerResponse = await database.CreateContainerIfNotExistsAsync(containerId, "/email", 400);
+            var container = containerResponse.Container;
+
+            // データを取得
+            var itemResponse = await container.ReadItemAsync<ToDoItem>(id.ToString(), new PartitionKey(email));
+            var data = itemResponse.Resource;
+
+            data.Context = context;
+            data.Status = status;
+            var item = await container.UpsertItemAsync<ToDoItem>(data, new PartitionKey(data.EMail));
+
+            // REST的には削除したデータを返すのが正しい
+            return this.NoContent();
         }
 
         [HttpDelete("{id:Guid}")]

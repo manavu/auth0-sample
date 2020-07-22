@@ -5,5 +5,5 @@
     "dist{,/**}"
   ],
   "appService.deploySubpath": ".",
-  "appService.defaultWebAppToDeploy": "/subscriptions/2a723c6b-5bad-4cd6-80b0-3dd992564e49/resourceGroups/manavuexpress/providers/Microsoft.Web/sites/manavuexpress-web"
+  "appService.defaultWebAppToDeploy": "/subscriptions/a9d750ed-a965-4871-b0af-4bf70a8260da/resourceGroups/auth0-sample/providers/Microsoft.Web/sites/auth0-sample-client"
 }

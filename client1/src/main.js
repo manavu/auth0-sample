@@ -18,7 +18,7 @@ Vue.prototype.$axios = Axios
 Vue.config.productionTip = false
 
 // Import the Auth0 configuration
-import { domain, clientId } from '../auth_config.json'
+import { domain, clientId, audience } from '../auth_config.json'
 // Import the plugin here
 import { Auth0Plugin } from './auth'
 
@@ -26,7 +26,7 @@ import { Auth0Plugin } from './auth'
 Vue.use(Auth0Plugin, {
   domain,
   clientId,
-  audience: 'https://localhost:8080/api', // APIs の Identifier
+  audience, // APIs の Identifier
   onRedirectCallback: (appState) => {
     router.push(
       appState && appState.targetUrl

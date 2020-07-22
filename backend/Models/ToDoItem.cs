@@ -17,5 +17,8 @@ namespace backend.Models
 
         [JsonProperty(PropertyName = "createAt")]
         public DateTime CreateAt { get; set; }
+
+        [JsonProperty(PropertyName = "status")]
+        public string Status { get; set; }
     }
 }
