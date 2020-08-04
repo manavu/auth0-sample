@@ -18,12 +18,15 @@ namespace backend.Controllers
     {
         private readonly ILogger<ToDoController> _logger;
 
-        private readonly IConfiguration _configuration;
+        private readonly string _endpointUri;
+
+        private readonly string _primaryKey;
 
         public ToDoController(ILogger<ToDoController> logger, IConfiguration configuration)
         {
             _logger = logger;
-            _configuration = configuration;
+            _endpointUri = configuration["CosmosDb:EndpointUri"];
+            _primaryKey = configuration["CosmosDb:PrimaryKey"];
         }
 
         [HttpGet]
@@ -32,9 +35,7 @@ namespace backend.Controllers
             // ユーザー情報が入っていないjwtなので欲しい場合は、auth0に問い合わせる必要があるかも。
             // それかユーザー情報入りのjwtにするか、別個引数でユーザー情報を送ってもらう必要があるかも
 
-            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
-            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
-            using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
+            using var cosmosClient = new CosmosClient(this._endpointUri, this._primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
             // データベースはそのまま
@@ -66,9 +67,7 @@ namespace backend.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDoItem>> Post([FromForm] string context, [FromForm] string email)
         {
-            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
-            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
-            using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
+            using var cosmosClient = new CosmosClient(this._endpointUri, this._primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
             // データベースはそのまま
@@ -99,9 +98,7 @@ namespace backend.Controllers
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> Put(Guid id, [FromForm] string context, [FromForm] string email, [FromForm] string status)
         {
-            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
-            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
-            using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
+            using var cosmosClient = new CosmosClient(this._endpointUri, this._primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
             // データベースはそのまま
@@ -129,9 +126,7 @@ namespace backend.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> Delete(Guid id, [FromForm] string email)
         {
-            var endpointUri = this._configuration["CosmosDb:EndpointUri"];
-            var primaryKey = this._configuration["CosmosDb:PrimaryKey"];
-            using var cosmosClient = new CosmosClient(endpointUri, primaryKey, new CosmosClientOptions()
+            using var cosmosClient = new CosmosClient(this._endpointUri, this._primaryKey, new CosmosClientOptions()
             { ApplicationName = "CosmosDBDotnetQuickstart" });
 
             // データベースはそのまま
