@@ -17,11 +17,13 @@ const routes = [
     path: '/todo',
     name: 'ToDo',
     component: ToDo,
+    meta: { requiresAuth: true },
   },
   {
     path: '/profile',
     name: 'Profile',
     component: Profile,
+    meta: { requiresAuth: true },
   },
   {
     path: '/test',
@@ -33,6 +35,17 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some((record) => !record.meta.requiresAuth)) {
+    next()
+  } else if (router.app.$auth.isAuthenticated) {
+    next()
+  } else {
+    // router.app.$auth.login()
+    next({ path: '/', query: { redirect: to.fullPath } })
+  }
 })
 
 export default router
