@@ -5,7 +5,7 @@
     <UserSecretsId>d4fe9f9b-63b1-49b6-819e-37ae10a4973b</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.9.1" />
   </ItemGroup>
 </Project>
